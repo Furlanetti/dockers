@@ -1,0 +1,28 @@
+version: "3.1"
+services:
+  app:
+    image: node:latest
+    container_name: nodejs
+    working_dir: /application
+    volumes:
+      - .:/application
+    links:
+      - mysql
+    ports:
+      - "3000:3000"
+    entrypoint: /application/start_application.sh
+    env_file: ./.env
+    environment:
+      "NODE_ENV": "production"
+
+  mysql:
+    build:
+      dockerfile: Dockerfile
+      context: ./data/
+    container_name: mysql
+    volumes:
+      - ./data/db:/var/lib/mysql
+      - ./data/scripts:/scripts
+    restart: always
+    ports:
+      - "3306:3306"
